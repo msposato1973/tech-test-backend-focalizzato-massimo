@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.gocity.demo"},{"l":"com.gocity.demo.controller"},{"l":"com.gocity.demo.entity"},{"l":"com.gocity.demo.exception"},{"l":"com.gocity.demo.repository"},{"l":"com.gocity.demo.schema"},{"l":"com.gocity.demo.service"}];updateSearchResults();
