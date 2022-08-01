@@ -31,6 +31,7 @@ public class SharedController {
 	@Value("${parameters.pageTotal}")
 	public Integer total;
 
+
 	 
 	/***
 	 * 
@@ -40,7 +41,7 @@ public class SharedController {
 	protected Pageable setPageable(String sortBy) {
 		LOGGER.info("prepareResponseEntity: begin");
 		LOGGER.info(" prepareResponseEntity - set pagination by param : " + sortBy);
-		Pageable pageable = PageRequest.of(0, 10, Sort.by(sortBy).descending());
+		Pageable pageable = PageRequest.of(0, 10,   Sort.by(sortBy).descending() );
 		
 		return pageable;
 	}
