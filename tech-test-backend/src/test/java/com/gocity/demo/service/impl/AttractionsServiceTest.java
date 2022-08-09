@@ -1,4 +1,4 @@
-package com.gocity.demo.service;
+package com.gocity.demo.service.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,28 +12,31 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-
 import com.gocity.demo.entity.Attractions;
-import com.gocity.demo.repository.AttractionsRepository;
+import com.gocity.demo.entity.Destinations;
+import com.gocity.demo.repository.AttractionRepository;
+
 
 @ExtendWith(MockitoExtension.class)
 class AttractionsServiceTest {
 	
+
 	
 	private  final String ID  = buildIdUUI() ; 
 	private  final String ID_DESTINATION = ID;
 	
 	@InjectMocks
 	AttractionsService service;
-   
-    @Mock
-    AttractionsRepository repository;
-
+	
+	@Mock
+    AttractionRepository repository;
+	
 	@BeforeEach
 	void setUp() throws Exception {
 		service = new AttractionsService(repository);
 	}
+   
+	
 
 	@Test
 	void testFindByDestinationsId() {
@@ -45,11 +48,12 @@ class AttractionsServiceTest {
         }
         
      // Execute the service that uses the mocked repository
-        Optional<Attractions> listAttractions = service.findByDestinationsId(ID_DESTINATION);
+        List<Attractions> listAttractions = service.findByDestinationsId(ID_DESTINATION);
         
      // Validate the response
         checkAssertions(listAttractions);
 	}
+	
 	
 	@Test
 	void testFindAll() {
@@ -68,8 +72,9 @@ class AttractionsServiceTest {
         Assertions.assertEquals(2, listAttractions.size());
 	}
 	
-	private Attractions buildAttractions() {
-		return new Attractions(buildIdUUI(), buildIdUUI(),  "TestSpring", "gmail.com", "0745678923", 0 , 0, "sring");
+	private List<Attractions> buildListAttractions() {
+		List<Attractions> listOptional = List.of(buildAttractions());
+		return listOptional;
 	}
 	
 	private Iterable<Attractions> buildIteratorAttractions() {
@@ -77,25 +82,38 @@ class AttractionsServiceTest {
 	    return iterator;
 	}
 	
-	private List<Attractions> buildListAttractions() {
-		List<Attractions> listOptional = List.of(new Attractions(ID, ID_DESTINATION,  "TestSpring", "gmail.com", "0745678923", 0 , 0, "sring"));
-		return listOptional;
+	private Attractions buildAttractions() {
+
+	   //String name, String contactEmail, String contactPhone, Integer visitCount, Integer rating, String type, Destinations destinations
+		Attractions attractions= new Attractions("TestSpring", "gmail.com", "0745678923", 0 , 0, "sring", buildDestinations());
+		attractions.setId(ID);
+		
+		return attractions;
+	
 	}
 	
+	
+	private Destinations buildDestinations() {
+		Destinations destination = new Destinations("Napoli", "Napoli.google.map.gmail.com");
+		destination.setId(ID_DESTINATION);
+		return destination;
+	}
+	
+	
 	private String  buildIdUUI() {
-       UUID uuid = UUID.randomUUID();
-       return uuid.toString();
+	       UUID uuid = UUID.randomUUID();
+	       return uuid.toString();
     }
 	
-	private void  checkAssertions(Optional<Attractions> listAttractions) {
+	private void  checkAssertions(List<Attractions> listAttractions) {
 		Assertions.assertNotNull(listAttractions);
-		Assertions.assertTrue(listAttractions.isPresent());
+		Assertions.assertFalse(listAttractions.isEmpty());
 		
-		Assertions.assertEquals(0, listAttractions.get().getRating());
-		Assertions.assertEquals(0, listAttractions.get().getVisitCount());
-		Assertions.assertEquals("gmail.com", listAttractions.get().getContactEmail());
-		Assertions.assertEquals("TestSpring", listAttractions.get().getName());
-		Assertions.assertEquals("0745678923", listAttractions.get().getContactPhone());
+		Assertions.assertEquals(0, listAttractions.get(0).getRating());
+		Assertions.assertEquals(0, listAttractions.get(0).getVisitCount());
+		Assertions.assertEquals("gmail.com", listAttractions.get(0).getContactEmail());
+		Assertions.assertEquals("TestSpring", listAttractions.get(0).getName());
+		Assertions.assertEquals("0745678923", listAttractions.get(0).getContactPhone());
 	 }
 
 }

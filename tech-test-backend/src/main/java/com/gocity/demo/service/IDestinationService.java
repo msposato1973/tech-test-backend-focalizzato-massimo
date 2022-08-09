@@ -1,16 +1,13 @@
 package com.gocity.demo.service;
 
+
 import java.util.List;
 import java.util.Optional;
 
 import com.gocity.demo.entity.Destinations;
 
-/**
- * 
- * @author maxp7
- *
- */
 public interface IDestinationService {
+
 	/***
 	 * 
 	 * @param int pageNo
@@ -37,5 +34,6 @@ public interface IDestinationService {
 	 * @param destinations
 	 * @return Destinations
 	 */
-	Destinations addDestination(Destinations destinations);
+	
+	com.gocity.demo.entity.Destinations addDestination(com.gocity.demo.entity.Destinations destinations);
 }

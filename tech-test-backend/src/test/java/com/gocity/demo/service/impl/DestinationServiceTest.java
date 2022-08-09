@@ -1,4 +1,4 @@
-package com.gocity.demo.service;
+package com.gocity.demo.service.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +31,8 @@ class DestinationServiceTest {
 	void setUp() throws Exception {
 		service = new DestinationService(repository);
 	}
-
+	
+	
 	@Test
 	void testFindAll() {
 		try {
@@ -64,13 +65,15 @@ class DestinationServiceTest {
          
 	}
 	
+	
+	
 	private Optional<Destinations>  buildOptionalDestinations() {	
-		return Optional.of(new Destinations(ID, "TestSpring", "google") );
+		return Optional.of(buildDestinations(ID));
 	}
 	
 	private Iterable<Destinations> buildIteratorDestinations() {
 		Iterable<Destinations> iterator = List.of(
-											new Destinations(ID, "TestSpring", "google"), 
+											buildDestinations(ID), 
 											buildDestinations(), 
 											buildDestinations()
 										 );
@@ -78,9 +81,17 @@ class DestinationServiceTest {
 	}
 	
 	private Destinations buildDestinations() {
-		return new Destinations(buildIdUUI(), "TestSpring", "google");
+		Destinations destination = new Destinations("Napoli", "Napoli.google.map.gmail.com");
+		destination.setId(buildIdUUI());
+		return destination;
 	}
-
+	
+	private Destinations buildDestinations(String localID) {
+		Destinations destination = new Destinations("Napoli", "Napoli.google.map.gmail.com");
+		destination.setId(localID);
+		return destination;
+	}
+	
 	private String buildIdUUI() {
 		UUID uuid = UUID.randomUUID();
 		return uuid.toString();
@@ -91,8 +102,8 @@ class DestinationServiceTest {
 		 
 		Assertions.assertTrue(listDestinations.isPresent());
 		
-		Assertions.assertEquals("TestSpring", listDestinations.get().getName());
-		Assertions.assertEquals("google", listDestinations.get().getImageUrl());
+		Assertions.assertEquals("Napoli", listDestinations.get().getName());
+		Assertions.assertEquals("Napoli.google.map.gmail.com", listDestinations.get().getImageUrl());
 	}
 
 }

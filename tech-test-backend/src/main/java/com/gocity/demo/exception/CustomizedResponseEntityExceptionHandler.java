@@ -1,5 +1,6 @@
 package com.gocity.demo.exception;
 
+import com.gocity.demo.schema.ErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,9 +9,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
- 
-import com.gocity.demo.schema.ErrorResponse;
 
 @ControllerAdvice
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -65,6 +63,5 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 		ErrorResponse errorDetails = new ErrorResponse("400", ExceptionsTemplate.BED_REQUEST);
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
-	
-	 
+
 }

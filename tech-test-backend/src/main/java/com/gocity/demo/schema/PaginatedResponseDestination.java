@@ -2,8 +2,6 @@ package com.gocity.demo.schema;
 
 import java.util.List;
 
-import com.gocity.demo.entity.Destinations;
-
 public class PaginatedResponseDestination {
 	private Integer pageSize;
 	private Integer pageNumber;

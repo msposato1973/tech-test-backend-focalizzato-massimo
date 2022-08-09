@@ -1,5 +1,6 @@
 package com.gocity.demo.controller;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,23 +19,25 @@ import com.gocity.demo.exception.ExceptionsTemplate;
 import com.gocity.demo.schema.ErrorResponse;
 import com.gocity.demo.schema.PaginatedResponseAttraction;
 import com.gocity.demo.schema.PaginatedResponseDestination;
+import com.gocity.demo.utility.ModelMapper;
 
-public class SharedController {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SharedController.class);
+abstract class SharedController {
+
+private static final Logger LOGGER = LoggerFactory.getLogger(SharedController.class);
 	
-	@Value("${parameters.pageNumber}")
+	@Value("${pagination.parameters.pageNumber}")
 	public Integer pageNumber;
 	
-	@Value("${parameters.pageSize}")
+	@Value("${pagination.parameters.pageSize}")
 	public Integer pageSize;
 	
-	@Value("${parameters.pageTotal}")
+	@Value("${pagination.parameters.pageTotal}")
 	public Integer total;
 
 
 	 
 	/***
-	 * 
+	 * The a method to create an  setPageable sorted by input field name
 	 * @param sortBy
 	 * @return
 	 */
@@ -47,6 +50,7 @@ public class SharedController {
 	}
 	 
 	/***
+	 * The a method to create an  ResponseEntity object as Response in case of PaginatedResponseAttraction for list of Destinations
 	 * 
 	 * @param PaginatedResponseAttraction paginatedResponse
 	 * @return ResponseEntity 
@@ -54,11 +58,12 @@ public class SharedController {
 	ResponseEntity<?> prepareResponseEntity(PaginatedResponseDestination paginatedResponse, List<Destinations> list) {
 		LOGGER.info("prepareResponseEntity: begin");
 		try {
-			 paginatedResponse = PaginatedResponseDestination.builder()
+		    List<com.gocity.demo.schema.Destinations> mappingListDTO = (List<com.gocity.demo.schema.Destinations>) mappingListDTO(list, "destinations");
+			paginatedResponse = PaginatedResponseDestination.builder()
 					 .pageSize(Integer.valueOf(pageSize))
 					 .pageNumber(Integer.valueOf(pageNumber))
 					 .total(total)
-					 .results(list)
+					 .results(mappingListDTO)
 					 .build();
 			 
 			LOGGER.info("prepareResponseEntity: end");
@@ -74,7 +79,9 @@ public class SharedController {
 		 
 	}
 	
+	
 	/***
+	 * The a method to create an  ResponseEntity object as Response in case of PaginatedResponseAttraction for list of Attraction
 	 * 
 	 * @param PaginatedResponseAttraction paginatedResponse
 	 * @return ResponseEntity 
@@ -83,11 +90,12 @@ public class SharedController {
 		LOGGER.info("prepareResponseEntity: begin");
 		 try {
 			 if(!list.isEmpty()) {
-				 paginatedResponse = PaginatedResponseAttraction.builder()
+			    List<com.gocity.demo.schema.Attractions> mappingListDTO = (List<com.gocity.demo.schema.Attractions>) mappingListDTO(list, "attractions");
+				paginatedResponse = PaginatedResponseAttraction.builder()
 						.pageSize(Integer.valueOf(pageSize))
 						.pageNumber(Integer.valueOf(pageNumber))
 						.total(total)
-						.results(list)
+						.results(mappingListDTO)
 						.build();
 				 
 				LOGGER.info("!list.isEmpty()");
@@ -108,6 +116,7 @@ public class SharedController {
 	 
 	
 	/***
+	 * The a method to create an  ResponseEntity object as Response in case of error of Attraction
 	 * 
 	 * @param Attractions response
 	 * @return ResponseEntity
@@ -115,13 +124,13 @@ public class SharedController {
 	ResponseEntity<?> prepareResponseEntity(Optional<Attractions> response, String UUID) {
 		LOGGER.info("prepareResponseEntity - Attractions: begin");
 		
-		return   errorResponseEntity(UUID, "404", "Attraction " );
+		return errorResponseEntity(UUID, "404", "Attraction " );
 		 
 	}
 	
 	
 	/***
-	 * 
+	 * The a method to create an  ResponseEntity object as Response in case of error
 	 * @param Destinations response
 	 * @return ResponseEntity
 	 */
@@ -138,6 +147,42 @@ public class SharedController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
+	}
+	
+	/***
+	 * The a method to convert list of Entity object in DTO  attractions or destinations objects
+	 * @param listEntity
+	 * @param nameType
+	 * @return
+	 */
+	Collection<?> mappingListDTO(List<?> listEntity, String nameType) {
+	 
+		if (nameType.equalsIgnoreCase("attractions")) {
+			return (List<com.gocity.demo.schema.Attractions>) ModelMapper.convertListEntityToDto(listEntity, "attractions");
+		} else	{	
+			return (List<com.gocity.demo.schema.Destinations>) ModelMapper.convertListEntityToDto(listEntity, "destinations");
+		}
+	}
+	
+	/***
+	 * The a method to convert Entity object in DTO  Destination object: 
+	 * @param antity
+	 * @return
+	 */
+	protected com.gocity.demo.schema.Destinations convertEntityToDTO(com.gocity.demo.entity.Destinations antity) {
+		 
+		return ModelMapper.convertToDestinationsDto(antity);
+	}
+	
+	/***
+	 * The a method to convert Entity object in DTO  Attractions object
+	 * 
+	 * @param antity
+	 * @return
+	 */
+	protected com.gocity.demo.schema.Attractions  convertEntityToDTO(com.gocity.demo.entity.Attractions antity) {
+		 
+		return ModelMapper.convertToAttractionsDto(antity);
 	}
 	
 	

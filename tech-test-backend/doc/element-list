@@ -5,3 +5,5 @@ com.gocity.demo.exception
 com.gocity.demo.repository
 com.gocity.demo.schema
 com.gocity.demo.service
+com.gocity.demo.service.impl
+com.gocity.demo.utility

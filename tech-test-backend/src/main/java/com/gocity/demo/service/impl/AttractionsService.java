@@ -1,4 +1,4 @@
-package com.gocity.demo.service;
+package com.gocity.demo.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,20 +12,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.gocity.demo.entity.Attractions;
-import com.gocity.demo.repository.AttractionsRepository;
+import com.gocity.demo.repository.AttractionRepository;
+import com.gocity.demo.service.IAttractionService;
 
 @Service
-public class AttractionsService implements IAttractionsService {
+public class AttractionsService implements IAttractionService {
+
+
+private static final Logger LOGGER = LoggerFactory.getLogger(AttractionsService.class);
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(AttractionsService.class);
-	
-	private  AttractionsRepository repository;
+	private  AttractionRepository repository;
 	
 	/***
 	 * Constructor
 	 * @param attractionsRepository
 	 */
-	public AttractionsService(AttractionsRepository attractionsRepository) {
+	public AttractionsService(AttractionRepository attractionsRepository) {
 		this.repository = attractionsRepository;
 	}
 	
@@ -60,11 +62,10 @@ public class AttractionsService implements IAttractionsService {
 	}
 
 	@Override
-	public Optional<Attractions> findByDestinationsId(String destinationsId) {
+	public List<Attractions> findByDestinationsId(String destinationsId) {
 		// TODO Auto-generated method stub
 		List<Attractions> list = repository.findByDestination(destinationsId);
-		Optional<Attractions> optional = list.stream().findFirst();
-		return optional;
+		return list;
 	}
 
 
@@ -75,5 +76,4 @@ public class AttractionsService implements IAttractionsService {
 		return personPage;
 	}
 
-	
 }

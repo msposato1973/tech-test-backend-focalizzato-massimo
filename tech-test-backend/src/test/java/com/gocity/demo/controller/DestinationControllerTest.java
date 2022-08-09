@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,57 +15,56 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.gocity.demo.WebParams;
 import com.gocity.demo.entity.Destinations;
 import com.gocity.demo.exception.CustomNotFoundException;
 import com.gocity.demo.repository.DestinationRepository;
-import com.gocity.demo.service.DestinationService;
+import com.gocity.demo.service.impl.DestinationService;
 
-@ExtendWith(SpringExtension.class)
+
 @WebMvcTest(value = DestinationController.class)
 @WithMockUser
 public class DestinationControllerTest {
-	 
-	@Autowired
-    private MockMvc mockMvc;
-	
-	@MockBean
-    private DestinationService destinationService;
-	
-	@MockBean
-    private DestinationRepository mockRepository;
-	
+
 	private List<Destinations> list;
-	
-	private static final String ID  = "3fa85f64-5717-4562-b3fc-2c963f66afa6" ;
+
+	private static final String ID = "c0108893-dcc5-428f-9e42-d7e03a5037e0";
 	private static final String ID_ERR  = "3fa85f64-5717-4562-b3fc-2c963f66afff" ;
 	
-	private static final String URLDESTINATION_ID  = WebParams.API + WebParams.ALL_API + WebParams.DESTINATION_API  + WebParams.ALL_API + ID;
-	private static final String URLDESTINATION_ID_ERR  = WebParams.API + WebParams.ALL_API + WebParams.DESTINATION_API  + WebParams.ALL_API + ID_ERR;
-	private static final String URLDESTINATION_ALL =  WebParams.API + WebParams.DESTINATION_API;
+	private static final String URL_DESTINATION_ALL = "/api/destinations/";
+	private static final String URL_DESTINATION_ID = "/api/destinations/" + ID; 
+	private static final String URL_DESTINATION_ID_ERR = "/api/destinations/" + ID_ERR; 
 	
+	@Autowired
+	private MockMvc mockMvc;
+
+	@MockBean
+	private DestinationService destinationService;
+
+	@MockBean
+	private DestinationRepository mockRepository;
+
 	@BeforeEach
 	void setUp() throws Exception {
 		list = buildListDestinations();
 	}
- 
+
 	@Test
 	void testFindAll() throws Exception {
-		
-		 when(mockRepository.findAll()).thenReturn(list);
-		 
-		 Mockito.when(destinationService.findAll()).thenReturn(list);
-		 RequestBuilder requestBuilder = MockMvcRequestBuilders.get(URLDESTINATION_ALL).accept(MediaType.APPLICATION_JSON);
-		 
-		 MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-		 String expected = buildExpectedPagination();
-		 JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
+
+		when(mockRepository.findAll()).thenReturn(list);
+
+		Mockito.when(destinationService.findAll()).thenReturn(list);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get(URL_DESTINATION_ALL)
+				.accept(MediaType.APPLICATION_JSON);
+
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		String expected = buildExpectedPagination();
+		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 	}
 	
 	/**
@@ -79,7 +77,7 @@ public class DestinationControllerTest {
 		when(mockRepository.findById(ID)).thenReturn(buildOptionalDestinations());
 		
 		Mockito.when(destinationService.getDestinationById(ID)).thenReturn(Optional.of(destinations));
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get(URLDESTINATION_ID)
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get(URL_DESTINATION_ID)
 		 			.accept(MediaType.APPLICATION_JSON);
 		 
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
@@ -88,6 +86,7 @@ public class DestinationControllerTest {
 		
 	}
 	
+	
 	@Test
 	void testFindByIdForbiddenError() throws Exception {
 		
@@ -95,7 +94,7 @@ public class DestinationControllerTest {
 			when(mockRepository.findById(ID_ERR)).thenThrow(CustomNotFoundException.class);
 			
 			Mockito.when(destinationService.getDestinationById(ID_ERR)).thenThrow(CustomNotFoundException.class);
-			RequestBuilder requestBuilder = MockMvcRequestBuilders.get(URLDESTINATION_ID_ERR)
+			RequestBuilder requestBuilder = MockMvcRequestBuilders.get(URL_DESTINATION_ID_ERR)
 			 			.accept(MediaType.APPLICATION_JSON);
 			 
 			MvcResult result = mockMvc.perform(requestBuilder).andReturn();
@@ -106,33 +105,39 @@ public class DestinationControllerTest {
 		}
 		
 	}
-	
-	private List<Destinations> buildListDestinations() {
-		List<Destinations> list = List.of(buildDestinations());
-		return list;
-	}
-	
-	private Destinations buildDestinations() {
-		return new Destinations(ID, "TestSpring", "google");
-	}
-	
-	private Optional<Destinations>  buildOptionalDestinations() {	
-		return Optional.of(new Destinations(ID, "TestSpring", "google") );
-	}
-	
-	private  String buildExpectedPagination() {
-		String expected = "{\"pageSize\":10,\"pageNumber\":0,\"total\":0,\"results\":[{\"id\":\"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\"name\":\"TestSpring\",\"imageUrl\":\"google\"}]}";
-		return expected;
-	}
-	
-	private  String buildExpected() {
-		String expected = "{\"id\":\"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\"name\":\"TestSpring\",\"imageUrl\":\"google\"}";
-		return expected;
-	}
-	
-	private  String buildExpectedForbiddenError() {
+
+	private String buildExpectedForbiddenError() {
 		// new ErrorResponse("403", ExceptionsTemplate.FORBIDDEN), HttpStatus.FORBIDDEN
 		String expected = "{\"errorCode\":\"404\",\"errorMessage\":\"3fa85f64-5717-4562-b3fc-2c963f66afa6\"}";
 		return expected;
 	}
+
+	private Optional<Destinations> buildOptionalDestinations() {
+		return Optional.of(buildDestinations());
+	}
+
+	private Destinations buildDestinations() {
+		Destinations destination = new Destinations("Napoli", "Napoli.google.map.gmail.com");
+		destination.setId(ID);
+		return destination;
+	}
+
+	private List<Destinations> buildListDestinations() {
+		Destinations destination = new Destinations("Napoli", "Napoli.google.map.gmail.com");
+		destination.setId(ID);
+
+		List<Destinations> list = List.of(destination);
+		return list;
+	}
+
+	private String buildExpectedPagination() {
+		String expected = "{\"pageSize\":10,\"pageNumber\":0,\"total\":0,\"results\":[{\"id\":\"c0108893-dcc5-428f-9e42-d7e03a5037e0\",\"name\":\"Napoli\",\"imageUrl\":\"Napoli.google.map.gmail.com\"}]}";
+		return expected;
+	}
+	
+	private  String buildExpected() {
+		String expected = "{\"id\":\"c0108893-dcc5-428f-9e42-d7e03a5037e0\",\"name\":\"Napoli\",\"imageUrl\":\"Napoli.google.map.gmail.com\"}";
+		return expected;
+	}
+
 }

@@ -1,5 +1,6 @@
 package com.gocity.demo.service;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -8,9 +9,8 @@ import org.springframework.data.domain.Pageable;
 
 import com.gocity.demo.entity.Attractions;
 
+public interface IAttractionService {
 
-public interface IAttractionsService {
-	
 	/***
 	 * 
 	 * @param pageNo
@@ -43,7 +43,7 @@ public interface IAttractionsService {
 	 * @param destinationsId
 	 * @return
 	 */
-	Optional<Attractions>  findByDestinationsId(String destinationsId);
+	List<Attractions>  findByDestinationsId(String destinationsId);
 	
 	/***
 	 * 
@@ -52,4 +52,5 @@ public interface IAttractionsService {
 	 */
 	Page<Attractions> findAllByName(Pageable pageable);
 
+	
 }

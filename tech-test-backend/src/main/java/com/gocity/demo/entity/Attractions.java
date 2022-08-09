@@ -1,11 +1,11 @@
 package com.gocity.demo.entity;
 
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -15,53 +15,44 @@ import org.hibernate.annotations.GenericGenerator;
 public class Attractions {
 
 	@Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-        name = "UUID",
-        strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    private String id;
-	
-	@Column
-	private String destination;
-	
-	@Column
-	private String name;
-	
-	@Column
-	private String contactEmail;
-	
-	@Column
-	private String contactPhone;
-	
-	@Column
-	private int visitCount;
-	
-	@Column
-	private int rating;
-	
-	@Column
-	private String type;
-	
-	public Attractions(String id, String destination, 
-						String name,  String contactEmail, 
-						String contactPhone, int visitCount, 
-						int rating, String type) 
-	{
-		
+	@GeneratedValue(generator = "uuid2")
+	@GenericGenerator(name = "uuid2", strategy = "uuid2")
+	@Column(length = 36)
+	private String id;
+
+	@OneToOne
+	@JoinColumn(name = "destination_id", referencedColumnName = "id")
+	private Destinations destinations;
+
+	public Attractions(String name, String contactEmail, String contactPhone, Integer visitCount, Integer rating,
+			String type, Destinations destinations) {
 		super();
-		this.id = id;
-		this.destination = destination;
 		this.name = name;
 		this.contactEmail = contactEmail;
 		this.contactPhone = contactPhone;
 		this.visitCount = visitCount;
 		this.rating = rating;
 		this.type = type;
+		this.destinations = destinations;
 	}
 	
 	public Attractions() {
 		super();
+	}
+
+	private String name;
+	private String contactEmail;
+	private String contactPhone;
+	private Integer visitCount;
+	private Integer rating;
+	private String type;
+
+	public Destinations getDestinations() {
+		return destinations;
+	}
+
+	public void setDestinations(Destinations destinations) {
+		this.destinations = destinations;
 	}
 
 	public String getId() {
@@ -70,14 +61,6 @@ public class Attractions {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getDestination() {
-		return destination;
-	}
-
-	public void setDestination(String destination) {
-		this.destination = destination;
 	}
 
 	public String getName() {
@@ -104,19 +87,19 @@ public class Attractions {
 		this.contactPhone = contactPhone;
 	}
 
-	public int getVisitCount() {
+	public Integer getVisitCount() {
 		return visitCount;
 	}
 
-	public void setVisitCount(int visitCount) {
+	public void setVisitCount(Integer visitCount) {
 		this.visitCount = visitCount;
 	}
 
-	public int getRating() {
+	public Number getRating() {
 		return rating;
 	}
 
-	public void setRating(int rating) {
+	public void setRating(Integer rating) {
 		this.rating = rating;
 	}
 
@@ -127,10 +110,5 @@ public class Attractions {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, destination, name, contactEmail, contactPhone, visitCount, rating, type);
-	}
-	
+
 }

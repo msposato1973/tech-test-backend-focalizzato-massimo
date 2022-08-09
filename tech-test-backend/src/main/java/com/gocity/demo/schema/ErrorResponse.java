@@ -1,70 +1,36 @@
 package com.gocity.demo.schema;
 
-
-/***
- * 
- * @author maxp7
- *
- */
 public class ErrorResponse {
-	 
-	private String errorCode;
-	private String errorMessage;
 	
-	/***
-	 * 
-	 * @return String for errorCode
-	 */
+	private String errorCode	;
+	private String errorMessage	;
+	
 	public String getErrorCode() {
 		return errorCode;
 	}
-	
-	/***
-	 * 
-	 * @param String for errorCode
-	 */
 	public void setErrorCode(String errorCode) {
 		this.errorCode = errorCode;
 	}
-	
-	/***
-	 * 
-	 * @return  String for errorMessage
-	 */
 	public String getErrorMessage() {
-		return this.errorMessage;
+		return errorMessage;
 	}
-	/***
-	 * 
-	 * @param String for errorMessage
-	 */
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
-	
-	/***
-	 * Def. Constructor
-	 */
-	public ErrorResponse() {
-		super();
-	}
-	
-	/***
-	 * Constructor
-	 * @param String for errorCode
-	 * @param String for errorMessage
-	 */
 	public ErrorResponse(String errorCode, String errorMessage) {
 		super();
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}
-	
-	
+	public ErrorResponse() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	public String toString() {
 		return "ErrorResponse [errorCode=" + errorCode + ", errorMessage=" + errorMessage + "]";
 	}
+ 
+
 	
-	 
 }

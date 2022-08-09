@@ -1,7 +1,5 @@
 package com.gocity.demo.entity;
 
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,87 +11,58 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "Destinations")
 public class Destinations {
-
+	
 	@Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-        name = "UUID",
-        strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    private String id;
+	@GeneratedValue(generator = "uuid2")
+	@GenericGenerator(name = "uuid2", strategy = "uuid2")
+	@Column(length = 36, name = "id")
+	private String id;
 	
-	@Column
-	private String name;
+	@Column(name = "name")
+	private String name	;
 	
-	@Column
-	private String imageUrl;
+	@Column(name = "imageUrl")
+	private String imageUrl	;
 	
-	/***
-	 * 
-	 * @return
-	 */
-	public String getId() {
-		return id;
-	}
-	/***
-	 * 
-	 * @param id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-	/***
-	 * 
-	 * @return
-	 */
-	public String getName() {
-		return name;
-	}
-	/***
-	 * 
-	 * @param name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	/***
-	 * 
-	 * @return
-	 */
-	public String getImageUrl() {
-		return imageUrl;
-	}
-	/***
-	 * 
-	 * @param imageUrl
-	 */
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-	
-	/***
-	 * Constructor
-	 * @param id
-	 * @param name
-	 * @param imageUrl
-	 */
-	public Destinations(String id, String name, String imageUrl) {
+	public Destinations(String name, String imageUrl) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.imageUrl = imageUrl;
 	}
 	
-	/***
-	 * Def. Constructor
-	 */
 	public Destinations() {
 		super();
 	}
 	
+
 	@Override
-    public int hashCode() {
-        return Objects.hash(id, name, imageUrl);
-    }
+	public String toString() {
+		return "Destinations [id=" + id + ", name=" + name + ", imageUrl=" + imageUrl + "]";
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
 	
 }

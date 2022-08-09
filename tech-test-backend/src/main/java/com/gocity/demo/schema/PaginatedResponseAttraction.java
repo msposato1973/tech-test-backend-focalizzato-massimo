@@ -2,10 +2,8 @@ package com.gocity.demo.schema;
 
 import java.util.List;
 
-import com.gocity.demo.entity.Attractions;
-
-
 public class PaginatedResponseAttraction {
+	
 	private Integer pageSize;
 	private Integer pageNumber;
 	private Integer total;

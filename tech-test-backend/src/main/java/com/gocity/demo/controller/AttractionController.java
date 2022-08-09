@@ -1,6 +1,6 @@
 package com.gocity.demo.controller;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -22,18 +22,17 @@ import com.gocity.demo.exception.CustomNotFoundException;
 import com.gocity.demo.exception.ExceptionsTemplate;
 import com.gocity.demo.schema.ErrorResponse;
 import com.gocity.demo.schema.PaginatedResponseAttraction;
-import com.gocity.demo.service.AttractionsService;
-import com.gocity.demo.service.IAttractionsService;
-
+import com.gocity.demo.service.IAttractionService;
+import com.gocity.demo.service.impl.AttractionsService;
 
 @RestController
-@RequestMapping(WebParams.API)
+@RequestMapping(WebParams.ATTRACTION_API)
 public class AttractionController extends SharedController {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(AttractionController.class);
+	
+private static final Logger LOGGER = LoggerFactory.getLogger(AttractionController.class);
 	
 
-	private final IAttractionsService attractionsService;
+	private IAttractionService attractionsService = null;
 	
 	/***
 	 * Constructor
@@ -42,15 +41,16 @@ public class AttractionController extends SharedController {
 	public AttractionController(AttractionsService attractionsService){
 			this.attractionsService = attractionsService;
 	}
-
+	
 	/***
+	 * The public API to return all of Attractions object : 
 	 * 
 	 * @param destinationId
 	 * @param pageNumber
 	 * @param pageSize
 	 * @return
 	 */
-	@GetMapping(WebParams.ATTRACTION_API)
+	@GetMapping(WebParams.ALL_API)
 	public ResponseEntity<?> findId(@RequestParam String destinationId,
 			@RequestParam(required = false, value = "pageNumber", defaultValue = "0") Integer pageNumber,
 			@RequestParam(required = false, value = "pageSize", defaultValue = "10") Integer pageSize) {
@@ -59,26 +59,27 @@ public class AttractionController extends SharedController {
 		if ((destinationId.equals("") && destinationId == null)) extractedException(destinationId);
 		 
 
-		Optional<Attractions> list = attractionsService.findByDestinationsId(destinationId);
+		List<Attractions> list = attractionsService.findByDestinationsId(destinationId);
 		if (list.isEmpty()) {
 			throw new CustomForbiddenException(ExceptionsTemplate.FORBIDDEN + destinationId);
 		}
 
-		return prepareResponseEntity(new PaginatedResponseAttraction(), list.stream().collect(Collectors.toList()));
+		return prepareResponseEntity(new PaginatedResponseAttraction(), list);
 	}
-
+	
 	private void extractedException(String destinationId) {
 		throw new CustomNotFoundException(ExceptionsTemplate.NOT_FOUND + destinationId);
 	}
 	
 	/***
+	 * The public API for pagination with parameters : 
 	 * 
 	 * @param pageNumber
 	 * @param pageSize
 	 * @param sortBy
-	 * @return
+	 * @return ResponseEntity<Object>
 	 */
-	@GetMapping(WebParams.ATTRACTION_PAGINATION)
+	@GetMapping(WebParams.ATTRACTION_PAGINATION + WebParams.ID_API)
 	public ResponseEntity<?> findAllByPagination(
 			@RequestParam(required = false, value = "pageNumber", defaultValue = "0") Integer pageNumber,
 			@RequestParam(required = false, value = "pageSize", defaultValue = "10") Integer pageSize,
@@ -110,8 +111,9 @@ public class AttractionController extends SharedController {
 		
 	}
 
+	
 	/***
-	 * 
+	 * The public API to creaate a attractions object : 
 	 * @param attractions
 	 * @return
 	 * @throws Exception
@@ -120,7 +122,7 @@ public class AttractionController extends SharedController {
 	public ResponseEntity<Object> create(@RequestBody Attractions attractions) throws Exception {
 
 		Attractions antity = attractionsService.addAttraction(attractions);
-		return new ResponseEntity<>(antity, HttpStatus.CREATED);
+		return new ResponseEntity<>(convertEntityToDTO(antity), HttpStatus.CREATED);
 	}
 
 }
